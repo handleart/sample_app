@@ -5,13 +5,18 @@ describe "User Pages" do
 
 	subject { page }
 
-	describe "Sign-up" do
-		before {visit signup_path}
-		let(:submit) {"Create my account"}
+	describe "signup page" do
 		describe "Sign-up page UI validation" do
+			before {visit signup_path}
 			it {should have_selector('h1', text: 'Sign up') }
 			it {should have_selector('title', text: 'Sign up') }
 		end
+	end
+
+	describe "signup" do
+		before {visit signup_path}
+		let(:submit) {"Create my account"}
+
 
 		describe "with invalid information" do
 			it "should not create a user" do
@@ -34,7 +39,7 @@ describe "User Pages" do
 	end
 
  let(:user) {FactoryGirl.create(:user)} 
-    describe "Profile page" do
+    describe "profile" do
     	before {visit user_path(user)}
 
     	it {should have_selector('h1', text: user.name)}
