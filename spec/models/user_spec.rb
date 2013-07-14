@@ -12,7 +12,7 @@ require 'spec_helper'
 
 describe User do
 
-  before { @user = User.new(name: "Example User", email: "user@example.com", password: "foobar", password_confirmation: "foobar") }
+  before { @user = User.new(name: "Example User", email: "user@example.com", password: "foobar", password_confirmation: "foobar" ) }
 
   subject { @user }
 
@@ -24,8 +24,19 @@ describe User do
   it { should respond_to(:authenticate) }
   it { should respond_to(:remember_token) }
 
+  it { should respond_to(:admin)}
 
   it { should be_valid }
+  it { should_not be_admin}
+
+  describe "with admin attribute set to 'true'" do
+    before do
+      @user.save!
+      @user.toggle!(:admin)
+    end
+
+    it {should be_admin}
+  end
 
   describe "remember token" do
     before { @user.save }
@@ -85,7 +96,6 @@ describe User do
     @user.email = mixed_case_email
     @user.save
     @user.reload.email.should == mixed_case_email.downcase
-
   end
 
  end
@@ -121,5 +131,14 @@ describe User do
     it { should_not == user_for_invalid_password }
     specify { user_for_invalid_password.should be_false }
   end
+
  end
+  describe "accessible attributes" do
+    #before { @user = User.new(name: "Example User", email: "user@example.com", password: "foobar", password_confirmation: "foobar" , admin: 'true') }
+    it "should not allow access to admin toggle" do
+      expect do  
+       User.new(name: "Example User", email: "user@example.com", password: "foobar", password_confirmation: "foobar", admin: 'true') 
+      end.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
+    end
+  end
 end
